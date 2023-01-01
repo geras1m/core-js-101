@@ -93,8 +93,8 @@ function getSumBetweenNumbers(n1, n2) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  return (a + b > c) && (b + c > a) && (a + c > b);
 }
 
 
@@ -130,8 +130,15 @@ function isTriangle(/* a, b, c */) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  const rect2Length = rect2.left + rect2.width;
+  const rect2Height = rect2.top + rect2.height;
+  const rect1Length = rect1.left + rect1.width;
+  const rect1Height = rect1.top + rect1.height;
+  return ((rect1.left >= rect2.left && rect1.left <= rect2Length)
+      && (rect1.top >= rect2.top && rect1.top <= rect2Height))
+    || ((rect2.left >= rect1.left && rect2.left <= rect1Length)
+      && (rect2.top >= rect1.top && rect2.top <= rect1Height));
 }
 
 
@@ -161,8 +168,8 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  return (point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2 < circle.radius ** 2;
 }
 
 
@@ -278,8 +285,22 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  let sum = 0;
+  const cardNumbersArray = ccn.toString()
+    .split('')
+    .map((elem) => +elem);
+  const parity = cardNumbersArray.length % 2;
+  for (let i = 0; i < cardNumbersArray.length; i += 1) {
+    if (i % 2 !== parity) {
+      sum += cardNumbersArray[i];
+    } else if (cardNumbersArray[i] > 4) {
+      sum += 2 * cardNumbersArray[i] - 9;
+    } else {
+      sum += 2 * cardNumbersArray[i];
+    }
+  }
+  return sum % 10 === 0;
 }
 
 /**
@@ -337,8 +358,26 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const arr = [];
+  const closeBrackets = ['}', ']', ')', '>'];
+  const brackets = {
+    '}': '{',
+    ']': '[',
+    ')': '(',
+    '>': '<',
+  };
+  for (let i = 0; i < str.length; i += 1) {
+    if (closeBrackets.indexOf(str[i]) !== -1) {
+      const removeBracket = arr.pop();
+      if (brackets[str[i]] !== removeBracket) {
+        return false;
+      }
+    } else {
+      arr.push(str[i]);
+    }
+  }
+  return arr.length === 0;
 }
 
 
@@ -402,8 +441,18 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const arr = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    arr.push([]);
+    for (let j = 0; j < m2[0].length; j += 1) {
+      arr[i][j] = 0;
+      for (let k = 0; k < m2.length; k += 1) {
+        arr[i][j] += m1[i][k] * m2[k][j];
+      }
+    }
+  }
+  return arr;
 }
 
 
@@ -437,8 +486,22 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  for (let i = 0; i < position.length; i += 1) {
+    if (position[i][0] === position[i][1]
+      && position[i][0] === position[i][2] && position[i][0] !== undefined) {
+      return position[i][0];
+    }
+    if (position[0][i] === position[1][i]
+      && position[0][i] === position[2][i] && position[0][i] !== undefined) {
+      return position[0][i];
+    }
+  }
+  if (position[0][0] === position[1][1] && position[0][0] === position[2][2]
+    && position[0][0] !== undefined) return position[0][0];
+  if (position[0][2] === position[1][1] && position[0][2] === position[2][0]
+    && position[2][0] !== undefined) return position[2][0];
+  return undefined;
 }
 
 module.exports = {
